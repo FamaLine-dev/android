@@ -108,6 +108,10 @@ public class CameraXHelper implements LifecycleOwner {
     public void takePhotoFront(PhotoCallback callback) {
         takePhoto(CameraSelector.LENS_FACING_FRONT, callback);
     }
+
+    public void takePhotoForStream(PhotoCallback callback, int lensFacing) {
+    takePhoto(lensFacing, callback);
+    }
     
     private void takePhoto(int lensFacing, PhotoCallback callback) {
         if (isTakingPhoto.get()) {
