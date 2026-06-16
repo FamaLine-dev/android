@@ -1,0 +1,1 @@
+Buatkan login register bisa WhatsApp API kode otp dan google lalu tema putih tombol biru database firebase supaya tidak hilang saat aplikasi dihapus lalu dashboard nya yang bagus jangan banyak warna autoresponsive Java android studio tapi layout dashboard nya seperti ini tapi card bisa slider dan beberapa multiple
